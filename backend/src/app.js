@@ -24,9 +24,10 @@ app.use((err, req, res, next) => {
 });
 
 // Modifica la conexión para usar IP explícita
-mongoose.connect('mongodb://127.0.0.1:27017/vehicle-management')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/vehicle-management')
   .then(() => console.log('Conectado a MongoDB'))
   .catch(err => console.error('Error conectando a MongoDB:', err))
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
