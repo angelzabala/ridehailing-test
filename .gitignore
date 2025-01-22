@@ -1,0 +1,39 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# MacOS
+.DS_Store
+
+# Environment variables
+.env
+
+# Build output
+dist/
+build/
+
+# Vue.js
+*.local
+*.env.local
+*.env.*.local
+
+# History
+.history/
+
+# Others
+coverage/ 
