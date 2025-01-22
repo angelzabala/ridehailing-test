@@ -108,52 +108,99 @@ Para desplegar el proyecto en producción, asegúrate de configurar las variable
 ## Diagráma de arquitectura
 
 ```mermaid
-graph TD
-    subgraph Frontend
-        Browser["Web Browser"]
-        VueApp["Vue Application"]
-        AuthStore["Auth Store"]
-        VehicleStore["Vehicle Store"]
-        Router["Vue Router"]
+graph TB
+    User((User))
+
+    subgraph "Frontend Container"
+        direction TB
+        FrontendApp["Vue.js Frontend App<br>(Vue.js + Vite)"]
+        
+        subgraph "Frontend Components"
+            Router["Router<br>(Vue Router)"]
+            StateManager["State Management<br>(Pinia)"]
+            UIFramework["UI Framework<br>(Vuetify)"]
+            HTTPClient["HTTP Client<br>(Axios)"]
+            
+            subgraph "Store Modules"
+                AuthStore["Auth Store<br>(Pinia Store)"]
+                VehicleStore["Vehicle Store<br>(Pinia Store)"]
+            end
+            
+            subgraph "Views"
+                AdminLayout["Admin Layout<br>(Vue Component)"]
+                AuthLayout["Auth Layout<br>(Vue Component)"]
+                VehicleList["Vehicle List<br>(Vue Component)"]
+                VehicleForm["Vehicle Form<br>(Vue Component)"]
+                LoginView["Login View<br>(Vue Component)"]
+                RegisterView["Register View<br>(Vue Component)"]
+            end
+        end
     end
 
-    subgraph Backend
-        Express["Express Server"]
-        AuthMiddleware["Auth Middleware"]
+    subgraph "Backend Container"
+        direction TB
+        ExpressApp["Express Server<br>(Node.js + Express)"]
         
-        subgraph Controllers
-            AuthController["Auth Controller"]
-            VehicleController["Vehicle Controller"]
+        subgraph "Backend Components"
+            AuthMiddleware["Auth Middleware<br>(JWT)"]
+            
+            subgraph "Controllers"
+                AuthController["Auth Controller<br>(Express Controller)"]
+                VehicleController["Vehicle Controller<br>(Express Controller)"]
+            end
+            
+            subgraph "Routes"
+                AuthRoutes["Auth Routes<br>(Express Router)"]
+                VehicleRoutes["Vehicle Routes<br>(Express Router)"]
+            end
+            
+            subgraph "Models"
+                UserModel["User Model<br>(Mongoose)"]
+                VehicleModel["Vehicle Model<br>(Mongoose)"]
+            end
         end
-        
-        subgraph Models
-            UserModel["User Model"]
-            VehicleModel["Vehicle Model"]
-        end
-        
-        MongoDB[(MongoDB)]
     end
 
-    %% Frontend Flow
-    Browser -->|"1. Access"| VueApp
-    VueApp -->|"2. Route"| Router
-    Router -->|"3. Check Auth"| AuthStore
-    VueApp -->|"4. API Calls"| VehicleStore
-    AuthStore -->|"5. Manage Session"| VueApp
+    subgraph "Database Container"
+        MongoDB[("MongoDB Database<br>(MongoDB)")]
+    end
 
-    %% Backend Flow
-    VehicleStore -->|"6. HTTP Request"| Express
-    Express -->|"7. Validate"| AuthMiddleware
-    AuthMiddleware -->|"8. Route"| Controllers
-    AuthController -->|"9. Query"| UserModel
-    VehicleController -->|"10. Query"| VehicleModel
-    UserModel -->|"11. Store/Retrieve"| MongoDB
-    VehicleModel -->|"12. Store/Retrieve"| MongoDB
+    %% User interactions
+    User -->|"Accesses"| FrontendApp
 
-    %% Authentication Flow
-    AuthStore -->|"Login/Register"| Express
-    Express -->|"Authenticate"| AuthController
-    AuthController -->|"Verify"| UserModel
+    %% Frontend internal relationships
+    FrontendApp -->|"Uses"| Router
+    FrontendApp -->|"Uses"| StateManager
+    FrontendApp -->|"Uses"| UIFramework
+    FrontendApp -->|"Uses"| HTTPClient
+    
+    StateManager -->|"Manages"| AuthStore
+    StateManager -->|"Manages"| VehicleStore
+    
+    Router -->|"Renders"| AdminLayout
+    Router -->|"Renders"| AuthLayout
+    AdminLayout -->|"Contains"| VehicleList
+    AdminLayout -->|"Contains"| VehicleForm
+    AuthLayout -->|"Contains"| LoginView
+    AuthLayout -->|"Contains"| RegisterView
+
+    %% Frontend to Backend communication
+    HTTPClient -->|"Makes API calls"| ExpressApp
+
+    %% Backend internal relationships
+    ExpressApp -->|"Uses"| AuthMiddleware
+    ExpressApp -->|"Routes to"| AuthRoutes
+    ExpressApp -->|"Routes to"| VehicleRoutes
+    
+    AuthRoutes -->|"Uses"| AuthController
+    VehicleRoutes -->|"Uses"| VehicleController
+    
+    AuthController -->|"Uses"| UserModel
+    VehicleController -->|"Uses"| VehicleModel
+    
+    %% Database relationships
+    UserModel -->|"Persists data"| MongoDB
+    VehicleModel -->|"Persists data"| MongoDB
 ```
 
 ## Contribuciones
