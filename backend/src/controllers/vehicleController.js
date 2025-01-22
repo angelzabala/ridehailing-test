@@ -44,7 +44,6 @@ export const vehicleController = {
         createdBy: req.user._id,
         updatedBy: req.user._id,
       });
-      console.log({vehicle});
       
       await vehicle.save();
       res.status(201).json(vehicle);
