@@ -58,11 +58,22 @@ const deleteVehicle = async () => {
   } finally {
     dialogLoading.value = false;
     snackbar.value = true;
+    vehicleStore.sortBy = 'createdAt';
+    vehicleStore.sortDesc = true;
     vehicleStore.fetchVehicles() //recargar la lista resulta más consistente
   }
 }
 
+const updateSortBy = (newSortBy) => {
+  vehicleStore.sortBy = newSortBy[0].key;
+  vehicleStore.sortDesc = !vehicleStore.sortDesc;
+
+  vehicleStore.fetchVehicles();
+}
+
 onMounted(() => {
+  vehicleStore.sortBy = 'createdAt';
+  vehicleStore.sortDesc = true;
   vehicleStore.fetchVehicles()
 })
 </script>
@@ -85,6 +96,7 @@ onMounted(() => {
 
     <v-card>
       <v-data-table-server
+      :class="{ 'active-sort-asc': (!vehicleStore.sortDesc) }"
       :headers="headers"
       :items="vehicleStore.vehicles"
         :items-length="vehicleStore.totalVehicles"
@@ -92,11 +104,13 @@ onMounted(() => {
         :items-per-page="10"
         :server-items-length="vehicleStore.totalVehicles"
         :page="vehicleStore.currentPage" 
-        @update:page="vehicleStore.fetchVehicles"
+        
         class="elevation-1"
         :density="mdAndDown ? 'compact' : 'default'"
-        :sort-by="['createdAt']"
-        :sort-desc="[true]"
+        :sort-by="[{key: vehicleStore.sortBy, order: vehicleStore.sortDesc}]"
+        :sort-desc="vehicleStore.sortDesc"
+        @update:sort-by="updateSortBy"
+        @update:page="vehicleStore.fetchVehicles"
       >
       
         <template #[`item._id`]="{ item }">
@@ -200,6 +214,10 @@ onMounted(() => {
 <style scoped>
 .v-data-table {
   width: 100%;
+}
+
+:deep(.v-data-table.active-sort-asc .v-data-table-header__content .v-data-table-header__sort-icon) {
+  rotate: 180deg;
 }
 
 :deep(.v-data-table-header__content) {

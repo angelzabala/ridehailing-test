@@ -14,8 +14,12 @@ export const useVehicleStore = defineStore('vehicles', {
       model: '',
       year: '',
       status: ''
-    }
+    },
+    sortBy: 'createdAt',
+    sortDesc: true
   }),
+
+
 
   actions: {
     async fetchVehicles(page = 1, limit = 10) {
@@ -26,9 +30,10 @@ export const useVehicleStore = defineStore('vehicles', {
         const params = new URLSearchParams({
           page: page.toString(),
           limit: limit.toString(),
+          ...(this.sortBy != undefined && { sortBy: this.sortBy }),
+          sortDesc: this.sortDesc,
           ...Object.fromEntries(
             Object.entries(this.filters).filter(([_, value]) => value)
-
           )
         })
 

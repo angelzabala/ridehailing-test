@@ -15,8 +15,12 @@ export const vehicleController = {
       if (req.query.year) query.year = req.query.year;
       if (req.query.status) query.status = req.query.status;
 
+      // Manejo de ordenamiento
+      const sortBy = req.query.sortBy || ''; // Valor por defecto
+      const sortDesc = req.query.sortDesc === 'true' ? -1 : 1; // Orden ascendente o descendente
+
       const vehicles = await Vehicle.find(query)
-        .sort({ createdAt: -1 })
+        .sort({ [sortBy]: sortDesc }) // Aplica el ordenamiento
         .skip(skip)
         .limit(limit)
         .populate('createdBy', 'email')
