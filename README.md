@@ -112,6 +112,7 @@ es importante que uses el nvm correcto en ambas consolas.
 ## Despliegue
 
 Para desplegar el proyecto en producción, asegúrate de configurar las variables de entorno adecuadas y utiliza un servicio de alojamiento compatible con Node.js y MongoDB.
+Por motivos laborales y de estudio no se hizo el despliegue en ninguna plataforma.
 
 ## Diagráma de arquitectura
 
