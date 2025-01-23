@@ -1,4 +1,6 @@
 <script setup>
+import { CHIPS_STATUS_CONFIG } from '@/constants/vehicleConstants';
+
 const props = defineProps({
   status: {
     type: String,
@@ -6,22 +8,8 @@ const props = defineProps({
   }
 })
 
-const statusConfig = {
-  disponible: {
-    color: 'success',
-    text: 'Disponible'
-  },
-  en_mantenimiento: {
-    color: 'warning',
-    text: 'En Mantenimiento'
-  },
-  en_servicio: {
-    color: 'info',
-    text: 'En Servicio'
-  }
-}
 
-const currentStatus = statusConfig[props.status] || {
+const currentStatus = CHIPS_STATUS_CONFIG[props.status] || {
   color: 'error',
   text: 'Estado Desconocido'
 }

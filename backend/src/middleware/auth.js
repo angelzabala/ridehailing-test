@@ -10,8 +10,9 @@ export const auth = async (req, res, next) => {
     }
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET); //{userId, iat, exp}
       const user = await User.findOne({ _id: decoded.userId });
+
 
       if (!user) {
         throw new Error('Usuario no encontrado');

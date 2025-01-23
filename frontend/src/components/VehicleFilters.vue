@@ -1,6 +1,18 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useVehicleStore } from '@/stores/vehicles'
+import { FILTER_STATUS_OPTIONS } from '@/constants/vehicleConstants';
+
+// Función de debounce para los filtros
+const debounce = (func, delay) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+};
 
 const vehicleStore = useVehicleStore()
 
@@ -11,15 +23,13 @@ const filters = ref({
   status: ''
 })
 
-const statusOptions = [
-  { text: 'Todos', value: '' },
-  { text: 'Disponible', value: 'disponible' },
-  { text: 'En Mantenimiento', value: 'en_mantenimiento' },
-  { text: 'En Servicio', value: 'en_servicio' }
-]
+// Crea una función de debounce para setFilters
+const debouncedSetFilters = debounce((newFilters) => {
+  vehicleStore.setFilters(newFilters)
+}, 250);
 
 watch(filters, (newFilters) => {
-  vehicleStore.setFilters(newFilters)
+  debouncedSetFilters(newFilters);
 }, { deep: true })
 
 const clearFilters = () => {
@@ -60,7 +70,7 @@ const clearFilters = () => {
 
       <v-select
         v-model="filters.status"
-        :items="statusOptions"
+        :items="FILTER_STATUS_OPTIONS"
         item-title="text"
         item-value="value"
         label="Estado"

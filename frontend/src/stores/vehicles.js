@@ -28,6 +28,7 @@ export const useVehicleStore = defineStore('vehicles', {
           limit: limit.toString(),
           ...Object.fromEntries(
             Object.entries(this.filters).filter(([_, value]) => value)
+
           )
         })
 

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
-import {User} from './src/models/User.js';
-import {Vehicle} from './src/models/Vehicle.js';
+import {User} from '../src/models/User.js';
+import {Vehicle} from '../src/models/Vehicle.js';
 
 dotenv.config();
 
@@ -12,7 +12,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(async () => {
-    console.log("Connected to MongoDB");
+    console.log("Conectado a MongoDB");
 
     // Crear usuarios de prueba
     const hashedPassword = await bcrypt.hash("password123", 10);
@@ -44,9 +44,10 @@ mongoose
       { brand: "Volvo", model: "S60", year: 2021, status: "disponible", createdBy: users[0]._id, updatedBy: users[0]._id },
       { brand: "Jaguar", model: "XE", year: 2018, status: "en_servicio", createdBy: users[0]._id, updatedBy: users[0]._id },
       { brand: "Alfa Romeo", model: "Giulia", year: 2022, status: "disponible", createdBy: users[0]._id, updatedBy: users[0]._id },
+      { brand: "Jeep", model: "Cherokee", year: 2020, status: "disponible", createdBy: users[0]._id, updatedBy: users[0]._id },
     ]);
 
-    console.log("Seed data created");
+    console.log("Seed generado correctamente");
     mongoose.connection.close();
   })
   .catch((err) => {

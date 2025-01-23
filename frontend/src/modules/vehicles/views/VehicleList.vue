@@ -4,88 +4,21 @@ import { useVehicleStore } from '@/stores/vehicles'
 import { useDisplay } from 'vuetify'
 import VehicleFilters from '@/components/VehicleFilters.vue'
 import VehicleStatusChip from '@/components/VehicleStatusChip.vue'
+import { VEHICLE_TABLE_HEADERS, STATUS_OPTIONS } from '@/constants/vehicleConstants'
 
 const vehicleStore = useVehicleStore()
 const { mobile, mdAndDown } = useDisplay()
 
-const statusOptions = [
-  { text: 'Disponible', value: 'disponible' },
-  { text: 'En Mantenimiento', value: 'en_mantenimiento' },
-  { text: 'En Servicio', value: 'en_servicio' }
-]
-
-const headers = computed(() => [
-  { 
-    title: 'Id',
-    key: '_id',
-    sortable: true,
-    width: '10%'
-  },
-  { 
-    title: 'Marca',
-    key: 'brand',
-    sortable: true,
-    width: '10%'
-  },
-  { 
-    title: 'Modelo',
-    key: 'model',
-    sortable: true,
-    width: '10%'
-  },
-  { 
-    title: 'Año',
-    key: 'year',
-    sortable: true,
-    align: 'center',
-    width: '10%'
-  },
-  { 
-    title: 'Estado',
-    key: 'status',
-    sortable: true,
-    width: '10%'
-  },
-  { 
-    title: 'Creado',
-    key: 'createdAt',
-    sortable: true,
-    width: '15%'
-  },
-  { 
-    title: 'Actualizado',
-    key: 'updatedAt',
-    sortable: true,
-    width: '15%'
-  },
-  { 
-    title: 'Creador',
-    key: 'createdBy',
-    sortable: true,
-    width: '10%'
-  },
-  { 
-    title: 'Actualizado Por',
-    key: 'updatedBy',
-    sortable: true,
-    width: '10%'
-  },
-  { 
-    title: 'Acciones',
-    key: 'actions',
-    sortable: false,
-    align: 'end',
-    width: '10%'
-  }
-])
+const headers = computed(() => VEHICLE_TABLE_HEADERS)
 
 const snackbar = ref(false)
 const snackbarMessage = ref('')
 const snackbarColor = ref('')
 const dialog = ref(false)
-const dialogLoading = ref('')
+const dialogLoading = ref(false)
 const dialogError = ref('')
 const selectedVehicle = ref(null)
+
 
 const handleStatusChange = async (vehicle, newStatus) => {
   try {
@@ -125,6 +58,7 @@ const deleteVehicle = async () => {
   } finally {
     dialogLoading.value = false;
     snackbar.value = true;
+    vehicleStore.fetchVehicles() //recargar la lista resulta más consistente
   }
 }
 
@@ -158,7 +92,7 @@ onMounted(() => {
         :items-per-page="10"
         :server-items-length="vehicleStore.totalVehicles"
         :page="vehicleStore.currentPage" 
-        @update:page="vehicleStore.fetchVehicles" 
+        @update:page="vehicleStore.fetchVehicles"
         class="elevation-1"
         :density="mdAndDown ? 'compact' : 'default'"
         :sort-by="['createdAt']"
@@ -203,7 +137,7 @@ onMounted(() => {
 
             <v-list>
               <v-list-item
-                v-for="option in statusOptions"
+                v-for="option in STATUS_OPTIONS"
                 :key="option.value"
                 :disabled="item.status === option.value"
                 @click="handleStatusChange(item, option.value)"
@@ -281,5 +215,9 @@ onMounted(() => {
 :deep(.v-table) {
   width: 100%;
   min-width: 600px;
+}
+
+:deep(.v-data-table-footer__items-per-page){
+  display: none;
 }
 </style>

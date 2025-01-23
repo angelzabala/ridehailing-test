@@ -16,24 +16,13 @@ axios.interceptors.response.use(
 
     if (error.response?.status === 401) {
       const authStore = useAuthStore();
-      authStore.logout();
+      authStore.logout(); //mantener las credenciales limpias
       router.push('/auth/login');
     }
     console.error('API Error:', error.response?.data || error.message);
     throw error.response?.data?.error || error.message;
   }
 );
-
-// Interceptor para agregar el token a las solicitudes
-axios.interceptors.request.use(config => {
-  const authStore = useAuthStore();
-  const token = authStore.token;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
 
 const app = createApp(App)
 const pinia = createPinia()

@@ -50,7 +50,7 @@ git clone https://github.com/angelzabala/ridehailing-test.git
 4. Ejecuta el script de seeder para poblar la base de datos:
 
    ```bash
-   node seeder.js
+   node ./database/seeder.js
    ```
 
 5. Iniciar el servidor:
@@ -91,7 +91,10 @@ es importante que uses el nvm correcto en ambas consolas.
 ## Uso
 
 - Accede a la aplicación en `http://localhost:5173`.
-- Regístrate o inicia sesión con las credenciales de prueba.
+- Regístrate o inicia sesión con las credenciales de prueba.  
+      - { email: "admin@example.com", password: password123 },
+      - { email: "user1@example.com", password: password123 },
+      - { email: "user2@example.com", password: password123 },
 - Administra los vehículos desde la interfaz de usuario.
 
 ## Detalles del Proyecto
