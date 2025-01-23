@@ -2,6 +2,9 @@
 
 Este proyecto es una aplicación web SPA que permite a los usuarios administradores autenticados registrar y visualizar vehículos en el contexto de una empresa de ride hailing.
 
+<img width="1900" alt="image" src="https://github.com/user-attachments/assets/46efb205-38b8-4627-8278-34c7e7c5badb" />
+
+
 ## Requisitos
 
 - Node.js v18.20.4
