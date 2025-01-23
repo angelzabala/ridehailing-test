@@ -92,10 +92,15 @@ es importante que uses el nvm correcto en ambas consolas.
 
 - Accede a la aplicación en `http://localhost:5173`.
 - Regístrate o inicia sesión con las credenciales de prueba.  
+- Administra los vehículos desde la interfaz de usuario.
+
+## Usuarios de prueba 
+      
+```plaintextv
       - { email: "admin@example.com", password: password123 }
       - { email: "user1@example.com", password: password123 }
       - { email: "user2@example.com", password: password123 }
-- Administra los vehículos desde la interfaz de usuario.
+```
 
 ## Detalles del Proyecto
 
