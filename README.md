@@ -157,6 +157,11 @@ graph TB
                 AuthController["Auth Controller<br>(Express Controller)"]
                 VehicleController["Vehicle Controller<br>(Express Controller)"]
             end
+
+            subgraph "Services"
+                AuthService["Auth Service<br>(Express Service)"]
+                VehicleService["Vehicle Service<br>(Express Service)"]
+            end
             
             subgraph "Routes"
                 AuthRoutes["Auth Routes<br>(Express Router)"]
@@ -204,8 +209,11 @@ graph TB
     AuthRoutes -->|"Uses"| AuthController
     VehicleRoutes -->|"Uses"| VehicleController
     
-    AuthController -->|"Uses"| UserModel
-    VehicleController -->|"Uses"| VehicleModel
+    AuthController -->|"Uses"| AuthService
+    VehicleController -->|"Uses"| VehicleService
+
+    AuthService -->|"Uses"| UserModel
+    VehicleService -->|"Uses"| VehicleModel
     
     %% Database relationships
     UserModel -->|"Persists data"| MongoDB
