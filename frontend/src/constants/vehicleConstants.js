@@ -8,7 +8,7 @@ export const VEHICLE_TABLE_HEADERS = [
   {
     title: "Id",
     key: "_id",
-    sortable: false,
+    sortable: true,
     width: "10%",
   },
   {

@@ -39,7 +39,6 @@ const clearFilters = () => {
     year: '',
     status: ''
   }
-  vehicleStore.clearFilters()
 }
 </script>
 

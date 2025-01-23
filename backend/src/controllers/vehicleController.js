@@ -1,33 +1,27 @@
-import { Vehicle } from '../models/Vehicle.js';
+import { vehicleService } from '../services/vehicleService.js';
 
 export const vehicleController = {
   async getVehicles(req, res) {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
-      const skip = (page - 1) * limit;
+      const sortBy = req.query.sortBy || 'createdAt';
+      const sortDesc = req.query.sortDesc === 'true' ? -1 : 1;
 
-      const query = {};
+      const filters = {
+        brand: req.query.brand,
+        model: req.query.model,
+        year: req.query.year,
+        status: req.query.status
+      };
 
-      // Filtros opcionales
-      if (req.query.brand) query.brand = new RegExp(req.query.brand, 'i');
-      if (req.query.model) query.model = new RegExp(req.query.model, 'i');
-      if (req.query.year) query.year = req.query.year;
-      if (req.query.status) query.status = req.query.status;
-
-      // Manejo de ordenamiento
-      const sortBy = req.query.sortBy || ''; // Valor por defecto
-      const sortDesc = req.query.sortDesc === 'true' ? -1 : 1; // Orden ascendente o descendente
-
-      const vehicles = await Vehicle.find(query)
-        .sort({ [sortBy]: sortDesc }) // Aplica el ordenamiento
-        .skip(skip)
-        .limit(limit)
-        .populate('createdBy', 'email')
-        .populate('updatedBy', 'email')
-        .lean();
-
-      const total = await Vehicle.countDocuments(query);
+      const { vehicles, total } = await vehicleService.getVehicles({
+        page,
+        limit,
+        filters,
+        sortBy,
+        sortDesc
+      });
 
       res.json({
         vehicles,
@@ -36,20 +30,18 @@ export const vehicleController = {
         totalPages: Math.ceil(total / limit),
       });
     } catch (error) {
-      console.error("Error obteniendo vehiculos:", error);
+      console.error("Error obteniendo vehículos:", error);
       res.status(500).json({ error: error.message });
     }
   },
 
   async createVehicle(req, res) {
     try {
-      const vehicle = new Vehicle({
+      const vehicle = await vehicleService.createVehicle({
         ...req.body,
         createdBy: req.user._id,
         updatedBy: req.user._id,
       });
-      
-      await vehicle.save();
       res.status(201).json(vehicle);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -61,23 +53,11 @@ export const vehicleController = {
       const { id } = req.params;
       const { status } = req.body;
 
-      const updatedVehicle = await Vehicle.findByIdAndUpdate(
-        id,
-        { status, updatedBy: req.user._id, updatedAt: Date.now() },
-        { new: true }
-      )
-        .populate('createdBy', 'email')
-        .populate('updatedBy', 'email')
-        .lean();
-
-      if (!updatedVehicle) {
-        return res.status(404).json({ message: 'Vehiculo no encontrado' });
-      }
-
+      const updatedVehicle = await vehicleService.updateVehicleStatus(id, status);
       res.json(updatedVehicle);
     } catch (error) {
-      console.error("Error actualizando el estado del vehiculo:", error);
-      res.status(500).json({ message: 'Error actualizando el estado del vehiculo', error: error.message });
+      console.error("Error actualizando el estado del vehículo:", error);
+      res.status(500).json({ message: 'Error actualizando el estado del vehículo', error: error.message });
     }
   },
 
@@ -101,14 +81,10 @@ export const vehicleController = {
   async deleteVehicle(req, res) {
     try {
       const { id } = req.params;
-      const vehicle = await Vehicle.findByIdAndDelete(id);
-
-      if (!vehicle) {
-        return res.status(404).json({ message: 'Vehículo no encontrado' });
-      }
-
+      await vehicleService.deleteVehicle(id);
       res.json({ message: 'Vehículo eliminado exitosamente' });
     } catch (error) {
+      console.error("Error al eliminar vehículo:", error);
       res.status(500).json({ message: 'Error al eliminar el vehículo', error: error.message });
     }
   },

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
@@ -9,6 +9,11 @@ const router = useRouter()
 const { mobile } = useDisplay()
 
 const drawer = ref(true)
+const currentRoute = ref(router.currentRoute.value.path)
+
+watch(router.currentRoute, (newRoute) => {
+  currentRoute.value = newRoute.path
+})
 
 const handleLogout = () => {
   authStore.logout()
@@ -23,7 +28,7 @@ const menuItems = [
   },
   {
     title: 'Nuevo Vehículo',
-    icon: 'mdi-car-plus',
+    icon: 'mdi-plus-circle',
     to: '/vehicles/new'
   }
 ]
@@ -51,11 +56,14 @@ const menuItems = [
       <v-list density="compact" nav>
         <v-list-item
           v-for="item in menuItems"
+          active-color="blue"
+          :active="currentRoute === item.to"
           :key="item.title"
           :value="item.title"
           :to="item.to"
           :prepend-icon="item.icon"
           :title="item.title"
+
         />
       </v-list>
     </v-navigation-drawer>
